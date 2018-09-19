@@ -22,11 +22,14 @@ class DataExtractor:
         instance_attribute = []
         for node in ast.walk(self.data):
             if isinstance(node, ast.Assign) and hasattr(node, 'targets'):
-                if isinstance(node.targets[0], ast.Attribute) and hasattr(node.targets[0], 'value'):
-                    if isinstance(node.targets[0].value, ast.Name):
-                        if self.___is_a_valid_attribute(node.targets[0], instance_attribute):
-                            instance_attribute.append(node.targets[0].attr)
+                if self.___is_a_valid_attribute(self.__get_ast_name_object(node), instance_attribute):
+                    instance_attribute.append(node.targets[0].attr)
         return instance_attribute
+
+    def __get_ast_name_object(self, node):
+        if isinstance(node.targets[0], ast.Attribute) and hasattr(node.targets[0], 'value'):
+            if isinstance(node.targets[0].value, ast.Name):
+                return node.targets[0]
 
     def ___is_a_valid_attribute(self, node, array):
         return node.value.id == 'self' and node.attr not in array
