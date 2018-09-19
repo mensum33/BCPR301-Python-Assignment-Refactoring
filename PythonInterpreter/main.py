@@ -28,10 +28,7 @@ class Interpreter(Cmd, Help):
             if options[0].lower() == 'f':
                 data = self.__get_data_from_file(options[1])
             elif options[0].lower() == 'd':
-                if os.path.isdir(options[1]):
-                    data = FileReader.read_from_folder(options[1])
-                else:
-                    print('The path provided is not a directory!!')
+                data = self.__get_data_from_folder(options[1])
             else:
                 print('Please provide valid indicator')
             self.extracted_data = self.extract_class_data(data)
@@ -45,6 +42,12 @@ class Interpreter(Cmd, Help):
                 return [file_data]
         else:
             print('The path provided is not a file!!')
+
+    def __get_data_from_folder(self, path):
+        if os.path.isdir(path):
+            return FileReader.read_from_folder(path)
+        else:
+            print('The path provided is not a directory!!')
 
     # Created By Suman
     def do_view(self, arg=""):
