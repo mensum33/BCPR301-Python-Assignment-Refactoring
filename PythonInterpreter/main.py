@@ -26,13 +26,7 @@ class Interpreter(Cmd, Help):
         if len(options) == 2:
             data = []
             if options[0].lower() == 'f':
-                if os.path.isfile(options[1]):
-                    file_data = \
-                        FileReader.read_from_file(os.path.abspath(options[1]))
-                    if file_data != '':
-                        data.append(file_data)
-                else:
-                    print('The path provided is not a file!!')
+                data = self.__get_data_from_file(options[1])
             elif options[0].lower() == 'd':
                 if os.path.isdir(options[1]):
                     data = FileReader.read_from_folder(options[1])
@@ -43,6 +37,14 @@ class Interpreter(Cmd, Help):
             self.extracted_data = self.extract_class_data(data)
         else:
             print('Valid options not provided. Use "help extract" command')
+
+    def __get_data_from_file(self, path):
+        if os.path.isfile(path):
+            file_data = FileReader.read_from_file(os.path.abspath(path))
+            if file_data != '':
+                return [file_data]
+        else:
+            print('The path provided is not a file!!')
 
     # Created By Suman
     def do_view(self, arg=""):
