@@ -21,8 +21,7 @@ class DataExtractor:
     def get_instance_attributes(self):
         instance_attribute = []
         for node in ast.walk(self.data):
-            if isinstance(node, ast.Assign):
-                if hasattr(node, 'targets'):
+            if isinstance(node, ast.Assign) and hasattr(node, 'targets'):
                     if isinstance(node.targets[0], ast.Attribute):
                         if hasattr(node.targets[0], 'value'):
                             if isinstance(node.targets[0].value, ast.Name):
