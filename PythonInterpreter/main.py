@@ -25,8 +25,9 @@ class Interpreter(Cmd, Help):
         options = self.extract_line(line)
         if len(options) == 2:
             data = []
-            if options[0].lower() == 'f':
-                data = self.__get_data_from_file(options[1])
+            conditions = {'f': self.__get_data_from_file}
+            if options[0].lower() in conditions.keys():
+                data = conditions[options[0].lower()](options[1])
             elif options[0].lower() == 'd':
                 data = self.__get_data_from_folder(options[1])
             else:
