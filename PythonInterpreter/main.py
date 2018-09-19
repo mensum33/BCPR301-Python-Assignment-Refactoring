@@ -21,15 +21,12 @@ class Interpreter(Cmd, Help):
 
     # Created By Jignesh
     def do_extract(self, line):
-
         options = self.extract_line(line)
         if len(options) == 2:
             data = []
-            conditions = {'f': self.__get_data_from_file}
+            conditions = {'f': self.__get_data_from_file, 'd': self.__get_data_from_folder}
             if options[0].lower() in conditions.keys():
                 data = conditions[options[0].lower()](options[1])
-            elif options[0].lower() == 'd':
-                data = self.__get_data_from_folder(options[1])
             else:
                 print('Please provide valid indicator')
             self.extracted_data = self.extract_class_data(data)
@@ -88,7 +85,6 @@ class Interpreter(Cmd, Help):
         else:
             print('Valid options not provided. Use "help generate" command')
 
-
     # Created By Jignesh
     def do_exit(self, line):
         print('Thank You for using the Interpreter')
@@ -105,10 +101,11 @@ class Interpreter(Cmd, Help):
 
     def extract_class_data(self, raw_data):
         extracted_data = []
-        for a_class in raw_data:
-            a_class_data = DataExtractor(a_class)
-            if a_class_data.class_name is not None:
-                extracted_data.append(a_class_data)
+        if raw_data is not None:
+            for a_class in raw_data:
+                a_class_data = DataExtractor(a_class)
+                if a_class_data.class_name is not None:
+                    extracted_data.append(a_class_data)
         return extracted_data
 
 
@@ -125,7 +122,6 @@ if __name__ == "__main__":
         else:
             print('Please provide\
             a valid path to a directory and try again!!!')
-
     # Created by Bikrant
     elif len(argv) == 4:
         if os.path.isdir(argv[2]):
