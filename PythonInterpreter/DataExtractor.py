@@ -20,10 +20,10 @@ class DataExtractor:
     # Created By Jignesh
     def get_instance_attributes(self):
         instance_attribute = []
-        for node in ast.walk(self.data):
-            if isinstance(node, ast.Assign) and hasattr(node, 'targets'):
-                if self.___is_a_valid_attribute(self.__get_ast_name_object(node), instance_attribute):
-                    instance_attribute.append(node.targets[0].attr)
+        [instance_attribute.append(node.targets[0].attr)
+         for node in ast.walk(self.data) if isinstance(node, ast.Assign)
+         and hasattr(node, 'targets') and self.___is_a_valid_attribute(
+            self.__get_ast_name_object(node), instance_attribute)]
         return instance_attribute
 
     def __get_ast_name_object(self, node):
@@ -32,7 +32,7 @@ class DataExtractor:
                 return node.targets[0]
 
     def ___is_a_valid_attribute(self, node, array):
-        return node.value.id == 'self' and node.attr not in array
+        return node is not None and node.value.id == 'self' and node.attr not in array
 
     # Created By Suman
     def get_instance_method_names(self):
@@ -58,8 +58,8 @@ class DataExtractor:
                 if isinstance(a_node.func, ast.Name):
                     if a_node.func.id not in association and \
                             a_node.func.id[0].isupper() and \
-                            a_node.func.id != self.class_name and \
-                            a_node.func.id not in self.inheritance:
+                                    a_node.func.id != self.class_name and \
+                                    a_node.func.id not in self.inheritance:
                         association.append(a_node.func.id)
                 elif isinstance(a_node.func, ast.Attribute):
                     if isinstance(a_node.func.value, ast.Name):
@@ -67,8 +67,8 @@ class DataExtractor:
                             if a_node.func.value.id not in association \
                                     and a_node.func.value.id[0].isupper() \
                                     and a_node.func.value.id != \
-                                    self.class_name \
+                                            self.class_name \
                                     and a_node.func.value.id \
-                                    not in self.inheritance:
+                                            not in self.inheritance:
                                 association.append(a_node.func.value.id)
         return association
