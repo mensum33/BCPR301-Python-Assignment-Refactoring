@@ -21,28 +21,31 @@ class Interpreter(Cmd, Help):
 
     # Created By Jignesh
     def do_extract(self, line):
-
         options = self.extract_line(line)
         if len(options) == 2:
             data = []
-            if options[0].lower() == 'f':
-                if os.path.isfile(options[1]):
-                    file_data = \
-                        FileReader.read_from_file(os.path.abspath(options[1]))
-                    if file_data != '':
-                        data.append(file_data)
-                else:
-                    print('The path provided is not a file!!')
-            elif options[0].lower() == 'd':
-                if os.path.isdir(options[1]):
-                    data = FileReader.read_from_folder(options[1])
-                else:
-                    print('The path provided is not a directory!!')
+            conditions = {'f': self.__get_data_from_file, 'd': self.__get_data_from_folder}
+            if options[0].lower() in conditions.keys():
+                data = conditions[options[0].lower()](options[1])
             else:
                 print('Please provide valid indicator')
             self.extracted_data = self.extract_class_data(data)
         else:
             print('Valid options not provided. Use "help extract" command')
+
+    def __get_data_from_file(self, path):
+        if os.path.isfile(path):
+            file_data = FileReader.read_from_file(os.path.abspath(path))
+            if file_data != '':
+                return [file_data]
+        else:
+            print('The path provided is not a file!!')
+
+    def __get_data_from_folder(self, path):
+        if os.path.isdir(path):
+            return FileReader.read_from_folder(path)
+        else:
+            print('The path provided is not a directory!!')
 
     # Created By Suman
     def do_view(self, arg=""):
@@ -82,7 +85,6 @@ class Interpreter(Cmd, Help):
         else:
             print('Valid options not provided. Use "help generate" command')
 
-
     # Created By Jignesh
     def do_exit(self, line):
         print('Thank You for using the Interpreter')
@@ -99,10 +101,11 @@ class Interpreter(Cmd, Help):
 
     def extract_class_data(self, raw_data):
         extracted_data = []
-        for a_class in raw_data:
-            a_class_data = DataExtractor(a_class)
-            if a_class_data.class_name is not None:
-                extracted_data.append(a_class_data)
+        if raw_data is not None:
+            for a_class in raw_data:
+                a_class_data = DataExtractor(a_class)
+                if a_class_data.class_name is not None:
+                    extracted_data.append(a_class_data)
         return extracted_data
 
 
@@ -119,7 +122,6 @@ if __name__ == "__main__":
         else:
             print('Please provide\
             a valid path to a directory and try again!!!')
-
     # Created by Bikrant
     elif len(argv) == 4:
         if os.path.isdir(argv[2]):
