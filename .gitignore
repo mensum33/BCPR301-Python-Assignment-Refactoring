@@ -1,0 +1,9 @@
+.idea
+.vs
+__pycache__
+rawUml.txt
+PythonInterpreter/output/success/*.png
+PythonInterpreter/output/error/error.txt
+.coverage
+html*
+~$*
